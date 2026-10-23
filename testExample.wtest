@@ -1,9 +1,32 @@
-import example.pepita
+import example.*
+import paquete.*
 
+object paqueteCaro {
+  method costo() = 500
+}
+
+object paqueteBarato {
+  method costo() = 50
+}
 describe "group of tests for pepita" {
-
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  const agente = new Agente(deudaActual = 100, estrategia = estrategiaClasica)
+  const alma = new Alma(capital = 100)
+ test "alma no dispone del capital suficiente" {
+    assert.throwsExceptionWithMessage(
+      "El alma no dispone del capital suficiente",
+      { agente.venderPaquete(paqueteCaro, alma) }
+    )
+ }
+  test "si falla la venta, el capital del alma no cambia ni se registra el paquete" {
+    try {
+      agente.venderPaquete(paqueteCaro, alma)
+    } catch e : DomainException {
+      // esperado
+    }
+    assert.equals(100, alma.capital())
+    assert.that(agente.paquetesVendidos().isEmpty())
+  }
   }
 
-}
+
+
